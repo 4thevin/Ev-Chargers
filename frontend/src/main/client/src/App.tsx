@@ -14,6 +14,7 @@ import {
 import { getCoordsFromZip } from "./api/geoCode.ts";
 
 function App() {
+  const [_view, setView] = useState<"search" | "loading" | "results">("search");
   const [stations, setStations] = useState([]);
   const [zipCode, setZipCode] = useState<string>();
   const [selectedAddress, setSelectedAddress] = useState("");
@@ -22,18 +23,22 @@ function App() {
   const handleSearch = async () => {
     if (!zipCode) return;
 
+    setView("loading");
+
     try {
       const { lat, lng } = await getCoordsFromZip(zipCode);
       const data = await getNearbyStation(lat, lng);
       setStations(data);
+      setView("results");
     } catch (err) {
       console.error("Search Error:", err);
       alert("Could not find chargers for the ZIP. Try another one.");
+      setView("search");
     }
   };
 
   const handleKeyPress = (e: any) => {
-    if (e.key == "enter") handleSearch();
+    if (e.key == "Enter") handleSearch();
   };
 
   const handleCardClick = (address: string, e: any) => {
@@ -53,9 +58,21 @@ function App() {
   };
 
   return (
-    <Box sx={{ p: 4 }}>
+    <Box
+      className="animated-bg"
+      sx={{
+        p: 4,
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        px: 2,
+        color: "white",
+      }}
+    >
       <Typography textAlign={"center"} variant={"h3"} mb={4}>
-        Nearby EV Chargers
+        Search for EV Chargers
       </Typography>
       <Box display={"flex"} justifyContent={"center"} mb={4} gap={2}>
         <TextField
@@ -70,29 +87,53 @@ function App() {
         </Button>
       </Box>
       <Grid2 container spacing={2} justifyContent={"center"}>
-        {stations.map((station: any) => (
+        {stations.map((station: any, i: number) => (
           <Grid2 size={{ xs: 8, sm: 4 }} key={station.ID}>
             <Card
-              key={station.ID}
-              onClick={(e) =>
-                handleCardClick(station.AddressInfo.AddressLine1, e)
-              }
+              key={i}
+              onClick={(e) => handleCardClick(station.address, e)}
               sx={{
                 cursor: "pointer",
                 "&:hover": { boxShadow: 6 },
-                backgroundColor: "rgb(153, 153, 153)",
+                backgroundColor: "#FFF1D0",
               }}
             >
               <CardContent>
+                <Typography variant={"h6"}>{station.name}</Typography>
                 <Typography variant={"h6"}>
-                  {station.AddressInfo.Title}
+                  {station.address}, {station.city}, {station.state}
                 </Typography>
+                <Typography variant={"body2"}>
+                  {" "}
+                  Website: {station.websiteUrl}
+                </Typography>
+                {station.usageCost && (
+                  <Typography variant={"body2"}>
+                    Cost: {station.usageCost}
+                  </Typography>
+                )}
+                {station.operator && (
+                  <Typography variant={"body2"}>
+                    Network: {station.operator}
+                  </Typography>
+                )}
                 <Typography variant={"h6"}>
-                  {station.AddressInfo.stateOrProvince}
+                  {Number(station.distance).toFixed(2)} mi
                 </Typography>
-                <Typography variant={"h6"}>
-                  {station.AddressInfo.Distance.toFixed(2)} mi
-                </Typography>
+                {station.chargerTypes?.length > 0 && (
+                  <Box mt={1}>
+                    {station.chargerTypes.map((type: string, i: number) => (
+                      <Button
+                        key={i}
+                        size={"small"}
+                        variant={"outlined"}
+                        sx={{ mr: 1, mb: 1 }}
+                      >
+                        {type}
+                      </Button>
+                    ))}
+                  </Box>
+                )}
               </CardContent>
             </Card>
           </Grid2>

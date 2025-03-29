@@ -12,6 +12,7 @@ public class StationDTO {
     private String address;
     private String city;
     private String state;
+    private String distance;
     private double lat;
     private double lng;
     private List<String> chargerTypes;
@@ -19,4 +20,5 @@ public class StationDTO {
     private String websiteUrl;
     private String usageCost;
     private String contact;
+    private String usageType;
 }
