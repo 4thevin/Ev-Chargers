@@ -22,7 +22,7 @@ import java.util.List;
 public class ChargingStationController {
 
     private final GeoCodeService geoCodeService;
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate;
 
     @Value("${openchargemap.api.key}")
     private String apiKey;
@@ -38,11 +38,12 @@ public class ChargingStationController {
                 "&distance=" + radius +
                 "&distanceunit=Miles&compact=false&verbose=false&maxresults=20&key=" + apiKey;
 
+        System.out.println("OCM Request URL: " + url);
 
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
 
-        List<StationDTO> stationDTOList = geoCodeService.OCMResoponseToStationDTO(jsonNode);
+        List<StationDTO> stationDTOList = geoCodeService.mapOCMToDTO(jsonNode);
         return ResponseEntity.ok(stationDTOList);
     }
 }

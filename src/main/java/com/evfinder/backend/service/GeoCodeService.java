@@ -10,18 +10,24 @@ import java.util.List;
 @Service
 public class GeoCodeService {
 
-    public List<StationDTO> OCMResoponseToStationDTO(JsonNode response) {
+    public List<StationDTO> mapOCMToDTO(JsonNode response) {
         List<StationDTO> stationDTOList = new ArrayList<>();
 
         for (JsonNode station : response) {
             JsonNode address = station.path("AddressInfo");
+            JsonNode usageTypeNode = station.path("UsageType");
+            String usageTitle = usageTypeNode.path("Title").asText("").toLowerCase();
 
-            String name = station.path("Title").asText();
-            String street = station.path("AddressLine1").asText();
-            String city = station.path("Town").asText();
-            String state = station.path("StateOrProvince").asText();
-            double lat = station.path("Latitude").asDouble();
-            double lng = station.path("Longitude").asDouble();
+            if(!usageTitle.contains("public")) continue;
+
+            String name = address.path("Title").asText();
+            String street = address.path("AddressLine1").asText();
+            String city = address.path("Town").asText();
+            String state = address.path("StateOrProvince").asText();
+            String distance = address.path("Distance").asText();
+            double lat = address.path("Latitude").asDouble();
+            double lng = address.path("Longitude").asDouble();
+            String contact = address.path("PhonePrimaryContact").asText(null);
 
             List<String> chargerTypes = new ArrayList<>();
             for (JsonNode charger : station.path("Connections")) {
@@ -33,10 +39,12 @@ public class GeoCodeService {
 
             String operator = station.path("OperatorInfo").path("Title").asText(null);
             String websiteUrl = station.path("OperatorInfo").path("WebsiteURL").asText(null);
-            String contact = station.path("OperationInfo").path("PhonePrimaryContact").asText(null);
             String usageCost = station.path("UsageCost").asText(null);
+            String usageType = usageTypeNode.path("Title").asText();
 
-            stationDTOList.add(new StationDTO(name, street, city, state, lat, lng, chargerTypes, operator, websiteUrl, contact, usageCost ));
+            stationDTOList.add(new StationDTO(
+                    name, street, city, state, distance, lat, lng, chargerTypes, operator, websiteUrl, contact, usageCost, usageType
+            ));
         }
 
         return stationDTOList;
