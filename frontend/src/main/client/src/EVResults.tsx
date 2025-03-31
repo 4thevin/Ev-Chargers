@@ -1,98 +1,202 @@
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  Grid2,
-  Menu,
-  MenuItem,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { Station } from "./Types.ts";
 import React from "react";
+import Timeline from "@mui/lab/Timeline";
+import TimelineItem from "@mui/lab/TimelineItem";
+import TimelineSeparator from "@mui/lab/TimelineSeparator";
+import TimelineConnector from "@mui/lab/TimelineConnector";
+import TimelineContent from "@mui/lab/TimelineContent";
+import TimelineDot from "@mui/lab/TimelineDot";
+import { TimelineOppositeContent } from "@mui/lab";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import MapIcon from "@mui/icons-material/Map";
 
 interface EVResultsProps {
   stations: Station[];
-  handleCardClick: (address: string, e: React.MouseEvent) => void;
+  selectedStation: Station | null;
+  handleCardClick: (
+    station: Station,
+    address: string,
+    e: React.MouseEvent,
+  ) => void;
   anchorEl: HTMLElement | null;
   setAnchorEl: (el: HTMLElement | null) => void;
-  handleCopy: () => void;
-  handleGoogleMaps: () => void;
 }
 
 const EVResults = ({
   stations,
+  selectedStation,
   handleCardClick,
-  anchorEl,
   setAnchorEl,
-  handleCopy,
-  handleGoogleMaps,
 }: EVResultsProps) => {
   return (
-    <Box className="animated-bg">
-      <Grid2 container spacing={2} justifyContent={"center"}>
-        {stations.map((station: any, i: number) => (
-          <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={station.ID}>
-            <Card
-              key={i}
-              onClick={(e) => handleCardClick(station.address, e)}
+    <>
+      <Box className={"animated-bg"}>
+        <Timeline position="alternate">
+          {stations.map((station, i) => (
+            <TimelineItem key={station.id} sx={{ color: "#FFFFFFCC" }}>
+              <TimelineOppositeContent
+                sx={{ m: "auto 0" }}
+                align="right"
+                variant="body2"
+              >
+                {Number(station.distance).toFixed(2)} mi
+              </TimelineOppositeContent>
+
+              <TimelineSeparator>
+                <TimelineDot sx={{ color: "#FFFFFFCC" }} />
+                {i !== stations.length - 1 && <TimelineConnector />}
+              </TimelineSeparator>
+
+              <TimelineContent sx={{ py: "12px", px: 2 }}>
+                <Typography variant="h6" component="span">
+                  {station.name}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "#FFFFFFCC" }}>
+                  {station.city}, {station.state}
+                </Typography>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  sx={{
+                    mt: 1,
+                    backgroundColor: "black",
+                    fontFamily: "'Orbitron', sans-serif",
+                    color: "#fff",
+                    fontWeight: "bold",
+                    borderRadius: "8px",
+                    paddingX: 4,
+                    "&:hover": {
+                      backgroundColor: "#222120",
+                      boxShadow: "0 0 10px rgba(162,112,138,0.6)",
+                    },
+                  }}
+                  onClick={(e) => handleCardClick(station, station.address, e)}
+                >
+                  View Details
+                </Button>
+              </TimelineContent>
+            </TimelineItem>
+          ))}
+        </Timeline>
+      </Box>
+      <Dialog
+        open={Boolean(selectedStation)}
+        onClose={() => setAnchorEl(null)}
+        slotProps={{
+          paper: {
+            sx: {
+              background:
+                "linear-gradient(270deg, #56126F, #191308, #37392E, #BDA0BC, #A2708A)",
+              backgroundSize: "600% 600%",
+              animation: "gradientAnimation 16s ease infinite",
+              color: "#FFFFFFCC",
+              padding: 2,
+              borderRadius: 2,
+            },
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{ color: "#FFFFFFCC", fontFamily: "'Orbitron', sans-serif" }}
+        >
+          Station Details
+        </DialogTitle>
+        <DialogContent
+          sx={{ color: "#FFFFFFCC", fontFamily: "'Orbitron', sans-serif" }}
+        >
+          <Typography
+            fontWeight="bold"
+            sx={{ color: "#FFFFFFCC", fontFamily: "'Orbitron', sans-serif" }}
+          >
+            Name: {selectedStation?.name}
+          </Typography>
+
+          <Box display="flex" alignItems="center" gap={1}>
+            <Typography
+              sx={{ color: "#FFFFFFCC", fontFamily: "'Orbitron', sans-serif" }}
+            >
+              Address: {selectedStation?.address}
+            </Typography>
+
+            <Tooltip
+              sx={{ color: "#FFFFFFCC", fontFamily: "'Orbitron', sans-serif" }}
+              title="Copy Address"
+            >
+              <IconButton
+                size="small"
+                onClick={() =>
+                  navigator.clipboard.writeText(selectedStation?.address || "")
+                }
+              >
+                <ContentCopyIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+          </Box>
+
+          <Typography
+            sx={{ color: "#FFFFFFCC", fontFamily: "'Orbitron', sans-serif" }}
+          >
+            Distance: {Number(selectedStation?.distance).toFixed(2)} mi
+          </Typography>
+
+          {selectedStation?.websiteUrl && (
+            <Typography
+              sx={{ color: "#FFFFFFCC", fontFamily: "'Orbitron', sans-serif" }}
+            >
+              Website:{" "}
+              <a
+                style={{
+                  color: "inherit",
+                  fontFamily: "'Orbitron', sans-serif",
+                }}
+                href={selectedStation.websiteUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {selectedStation.websiteUrl}
+              </a>
+            </Typography>
+          )}
+
+          <Box mt={2}>
+            <Button
+              variant="contained"
+              startIcon={<MapIcon />}
+              onClick={() => {
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                  selectedStation?.address || "",
+                )}`;
+                window.open(mapsUrl, "_blank");
+              }}
               sx={{
-                cursor: "pointer",
-                "&:hover": { boxShadow: 6 },
-                backgroundColor: "#FFF1D0",
+                backgroundColor: "black",
+                fontFamily: "'Orbitron', sans-serif",
+                color: "#fff",
+                fontWeight: "bold",
+                borderRadius: "8px",
+                paddingX: 4,
+                "&:hover": {
+                  backgroundColor: "#222120",
+                  boxShadow: "0 0 10px rgba(162,112,138,0.6)",
+                },
               }}
             >
-              <CardContent>
-                <Typography variant={"h6"}>{station.name}</Typography>
-                <Typography variant={"h6"}>
-                  {station.address}, {station.city}, {station.state}
-                </Typography>
-                <Typography variant={"body2"}>
-                  {" "}
-                  Website: {station.websiteUrl}
-                </Typography>
-                {station.usageCost && (
-                  <Typography variant={"body2"}>
-                    Cost: {station.usageCost}
-                  </Typography>
-                )}
-                {station.operator && (
-                  <Typography variant={"body2"}>
-                    Network: {station.operator}
-                  </Typography>
-                )}
-                <Typography variant={"h6"}>
-                  {Number(station.distance).toFixed(2)} mi
-                </Typography>
-                {station.chargerTypes?.length > 0 && (
-                  <Box mt={1}>
-                    {station.chargerTypes.map((type: string, i: number) => (
-                      <Button
-                        key={i}
-                        size={"small"}
-                        variant={"outlined"}
-                        sx={{ mr: 1, mb: 1 }}
-                      >
-                        {type}
-                      </Button>
-                    ))}
-                  </Box>
-                )}
-              </CardContent>
-            </Card>
-          </Grid2>
-        ))}
-        <Grid2> </Grid2>
-      </Grid2>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={() => setAnchorEl(null)}
-      >
-        <MenuItem onClick={handleCopy}>Copy Address</MenuItem>
-        <MenuItem onClick={handleGoogleMaps}>Open in Google Maps</MenuItem>
-      </Menu>
-    </Box>
+              Open in Google Maps
+            </Button>
+          </Box>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
