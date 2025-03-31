@@ -58,10 +58,6 @@ const EvCharger = ({
               "&.Mui-focused fieldset": {
                 borderColor: "transparent",
               },
-              "&:hover fieldset": {
-                backgroundColor: "#222120",
-                boxShadow: "0 0 10px rgba(162,112,138,0.6)",
-              },
             },
             width: "280px",
           }}
