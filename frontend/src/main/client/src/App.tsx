@@ -30,6 +30,12 @@ function App() {
     }
   };
 
+  const handleNewSearch = () => {
+    setStations([]);
+    setZipCode("");
+    setView("search");
+  };
+
   const handleKeyPress = (e: any) => {
     if (e.key == "Enter")
       handleSearch().then((r) => console.log(r + "key pressed"));
@@ -73,6 +79,8 @@ function App() {
   if (view == "results")
     return (
       <EVResults
+        handleNewSearch={handleNewSearch}
+        setSelectedStation={setSelectedStation}
         selectedStation={selectedStation}
         handleCardClick={handleCardClick}
         anchorEl={anchorEl}
