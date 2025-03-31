@@ -41,11 +41,11 @@ public class GeoCodeController {
 
         OpenCageResponseDTO data = response.getBody();
 
-        if(data == null || data.getResultDTOS() == null || data.getResultDTOS().isEmpty()) {
+        if(data == null || data.getResults() == null || data.getResults().isEmpty()) {
             return ResponseEntity.badRequest().body(Map.of("Data is null", -999.0));
         }
 
-        ResultDTO results = data.getResultDTOS().getFirst();
+        ResultDTO results = data.getResults().getFirst();
         if(!"us".equalsIgnoreCase(results.getComponentsDTO().getCountry_code())) {
             return ResponseEntity.badRequest().body(Map.of("Non US zipcode", -999.0));
         }

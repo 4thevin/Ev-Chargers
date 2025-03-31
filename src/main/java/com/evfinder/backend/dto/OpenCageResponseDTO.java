@@ -9,5 +9,5 @@ import java.util.List;
 public class OpenCageResponseDTO {
 
     @JsonProperty("results")
-    private List<ResultDTO> resultDTOS;
+    private List<ResultDTO> results;
 }
