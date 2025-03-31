@@ -28,18 +28,65 @@ const EvCharger = ({
         color: "white",
       }}
     >
-      <Typography textAlign={"center"} variant={"h3"} mb={4}>
+      <Typography
+        textAlign={"center"}
+        variant={"h3"}
+        mb={4}
+        sx={{
+          fontFamily: "'Orbitron', sans-serif",
+          color: "#FFFFFFCC",
+          letterSpacing: "1px",
+          textShadow: "0 0 8px rgba(255,255,255,0.2)",
+        }}
+      >
         Search for EV Chargers
       </Typography>
       <Box display={"flex"} justifyContent={"center"} mb={4} gap={2}>
         <TextField
+          sx={{
+            input: {
+              color: "#FFFFFFCC",
+              backgroundColor: "black",
+              borderRadius: "8px",
+            },
+            label: { color: "#FFFFFFCC", fontFamily: "'Orbitron', sans-serif" },
+            "& label.Mui-focused": { color: "#FFFFFFCC" },
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "transparent",
+              },
+              "&.Mui-focused fieldset": {
+                borderColor: "transparent",
+              },
+              "&:hover fieldset": {
+                backgroundColor: "#222120",
+                boxShadow: "0 0 10px rgba(162,112,138,0.6)",
+              },
+            },
+            width: "280px",
+          }}
           label={"Type in your zip code"}
           variant={"outlined"}
           value={zipCode}
           onChange={(e) => setZipCode(e.target.value)}
           onKeyDown={handleKeyPress}
         />
-        <Button variant={"contained"} onClick={handleSearch}>
+        <Button
+          variant={"contained"}
+          onClick={handleSearch}
+          sx={{
+            backgroundColor: "black",
+            fontFamily: "'Orbitron', sans-serif",
+            color: "#fff",
+            fontWeight: "bold",
+            borderRadius: "8px",
+            paddingX: 4,
+            "&:hover": {
+              backgroundColor: "#222120",
+              boxShadow: "0 0 10px rgba(162,112,138,0.6)",
+            },
+          }}
+        >
           Search
         </Button>
       </Box>
