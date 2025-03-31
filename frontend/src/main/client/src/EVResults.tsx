@@ -29,10 +29,10 @@ const EVResults = ({
   handleGoogleMaps,
 }: EVResultsProps) => {
   return (
-    <Box>
+    <Box className="animated-bg">
       <Grid2 container spacing={2} justifyContent={"center"}>
         {stations.map((station: any, i: number) => (
-          <Grid2 size={{ xs: 8, sm: 4 }} key={station.ID}>
+          <Grid2 size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={station.ID}>
             <Card
               key={i}
               onClick={(e) => handleCardClick(station.address, e)}

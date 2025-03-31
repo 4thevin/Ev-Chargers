@@ -63,6 +63,7 @@ function App() {
   if (view == "loading")
     return (
       <Box
+        className="animated-bg"
         textAlign={"center"}
         display={"flex"}
         sx={{
