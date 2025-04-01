@@ -45,7 +45,7 @@ public class GeoCodeController {
             return ResponseEntity.badRequest().body(Map.of("Data is null", -999.0));
         }
 
-        ResultDTO results = data.getResults().getFirst();
+        ResultDTO results = data.getResults().get(0);
         if(!"us".equalsIgnoreCase(results.getComponentsDTO().getCountry_code())) {
             return ResponseEntity.badRequest().body(Map.of("Non US zipcode", -999.0));
         }
