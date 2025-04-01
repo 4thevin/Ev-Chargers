@@ -1,4 +1,4 @@
-package com.evfinder.backend;
+package com.evfinder.backend.controller;
 
 import com.evfinder.backend.dto.GeometryDTO;
 import com.evfinder.backend.dto.OpenCageResponseDTO;

@@ -1,4 +1,4 @@
-package com.evfinder.backend;
+package com.evfinder.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
