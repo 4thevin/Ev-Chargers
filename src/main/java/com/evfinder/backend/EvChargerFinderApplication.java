@@ -8,13 +8,16 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class })
 @EnableCaching
-public class EvChargerfinderApplication {
+public class EvChargerFinderApplication {
 
 	public static void main(String[] args) {
-		Dotenv dotenv = Dotenv.load();
-		dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()) );
+		String env = System.getenv("ENV");
 
-		SpringApplication.run(EvChargerfinderApplication.class, args);
+		if("local".equals(env)) {
+			Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
+			dotenv.entries().forEach(entry -> System.setProperty(entry.getKey(), entry.getValue()));
+		}
+
+		SpringApplication.run(EvChargerFinderApplication.class, args);
 	}
-
 }

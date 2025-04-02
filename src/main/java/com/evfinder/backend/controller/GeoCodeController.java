@@ -37,8 +37,6 @@ public class GeoCodeController {
 
         ResponseEntity<OpenCageResponseDTO> response = restTemplate.getForEntity(url, OpenCageResponseDTO.class);
 
-        System.out.println("Response body: " + new ObjectMapper().writeValueAsString(response.getBody()));
-
         OpenCageResponseDTO data = response.getBody();
 
         if(data == null || data.getResults() == null || data.getResults().isEmpty()) {

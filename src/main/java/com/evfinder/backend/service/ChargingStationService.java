@@ -30,8 +30,6 @@ public class ChargingStationService {
                 "&distance=" + radius +
                 "&distanceunit=Miles&compact=false&verbose=false&maxresults=20&key=" + apiKey;
 
-        System.out.println("OCM Request URL: " + url);
-
         ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
         JsonNode jsonNode = new ObjectMapper().readTree(response.getBody());
 
